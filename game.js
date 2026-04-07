@@ -17,6 +17,7 @@ const upgrades = [
  { id: 3, name: "Game 3", cost: 5, bonus: 8 },
 ]
 
+// render upgrades
 function renderUpgrades() {
  const container = document.getElementById('upgrades')
  container.innerHTML = ''
@@ -34,6 +35,7 @@ function renderUpgrades() {
 
 renderUpgrades()
 
+//  buy an upgrade
 function buyUpgrade(id) {
 
  const upgrade = upgrades.find(e => e.id === id)
@@ -43,5 +45,22 @@ function buyUpgrade(id) {
   updateDisplay()
   renderUpgrades()
  }
-
 }
+
+//disabled buttons you cant afford
+upgrades.forEach(upgrade => {
+  const div = document.createElement('div');
+
+  const button = document.createElement('button');
+  button.textContent = 'Buy';
+  button.onclick = () => buyUpgrade(upgrade.id);
+  button.disabled = score < upgrade.cost;
+
+  div.innerHTML = `
+    <strong>${upgrade.name}</strong>
+    Cost: ${upgrade.cost} | +${upgrade.bonus} per click
+  `;
+  div.appendChild(button);
+  container.appendChild(div);
+});
+
