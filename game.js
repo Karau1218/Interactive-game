@@ -42,7 +42,7 @@ function buyUpgrade(id) {
  if (!upgrade) {
   return
  }
- if (score >= upgrades.cost) {
+ if (score >= upgrade.cost) {
   score -= upgrade.cost
   pointsPerClick += upgrade.bonus
   updateDisplay()
