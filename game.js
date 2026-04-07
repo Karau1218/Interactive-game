@@ -12,9 +12,9 @@ document.getElementById('click-btn').addEventListener('click', function () {
 })
 
 const upgrades = [
- { id: 1, name: "Game 1", cost: 1, bonus: 4 },
- { id: 2, name: "Game 2", cost: 5, bonus: 6 },
- { id: 3, name: "Game 3", cost: 5, bonus: 8 },
+ { id: 1, name: "Game 1", cost: 1, bonus: 4, purchased: 0 },
+ { id: 2, name: "Game 2", cost: 5, bonus: 6, purchased: 0 },
+ { id: 3, name: "Game 3", cost: 5, bonus: 8, purchased: 0 },
 ]
 
 // render upgrades
@@ -27,6 +27,7 @@ function renderUpgrades() {
   div.innerHTML = `
       <strong>${upgrade.name}</strong>
       Cost: ${upgrade.cost} | +${upgrade.bonus} per click
+      Bought : ${upgrade.purchased}
       <button onclick="buyUpgrade(${upgrade.id})">Buy</button>
     `
   container.appendChild(div)
@@ -45,6 +46,8 @@ function buyUpgrade(id) {
  if (score >= upgrade.cost) {
   score -= upgrade.cost
   pointsPerClick += upgrade.bonus
+  upgrade.purchased += 1
+  upgrade.cost += 2
   updateDisplay()
   renderUpgrades()
  }
