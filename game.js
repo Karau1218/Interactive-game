@@ -39,6 +39,9 @@ renderUpgrades()
 function buyUpgrade(id) {
 
  const upgrade = upgrades.find(e => e.id === id)
+ if (!upgrade) {
+  return
+ }
  if (score >= upgrades.cost) {
   score -= upgrade.cost
   pointsPerClick += upgrade.bonus
@@ -49,18 +52,18 @@ function buyUpgrade(id) {
 
 //disabled buttons you cant afford
 upgrades.forEach(upgrade => {
-  const div = document.createElement('div');
+ const div = document.createElement('div')
 
-  const button = document.createElement('button');
-  button.textContent = 'Buy';
-  button.onclick = () => buyUpgrade(upgrade.id);
-  button.disabled = score < upgrade.cost;
+ const button = document.createElement('button')
+ button.textContent = 'Buy'
+ button.onclick = () => buyUpgrade(upgrade.id)
+ button.disabled = score < upgrade.cost
 
-  div.innerHTML = `
+ div.innerHTML = `
     <strong>${upgrade.name}</strong>
     Cost: ${upgrade.cost} | +${upgrade.bonus} per click
-  `;
-  div.appendChild(button);
-  container.appendChild(div);
+  `
+ div.appendChild(button)
+ container.appendChild(div)
 });
 
