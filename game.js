@@ -1,16 +1,26 @@
 let score = 0
 let pointsPerClick = 1
+let winScore = 12
+let multiplier = 1
+let hasWon = false
 
 function updateDisplay() {
  document.getElementById('score-display').textContent = 'Score: ' + score
- document.getElementById('rate-display').textContent = 'Points per click: ' + pointsPerClick
+ document.getElementById('rate-display').textContent = 'Points per click: ' + pointsPerClick + ' | Multiplier: x' + multiplier
+
+ // check win condition
+ if (score >= winScore && !hasWon) {
+  hasWon = true
+  showWinScreen()
+ }
 }
 
 document.getElementById('click-btn').addEventListener('click', function () {
- score += pointsPerClick
+ score += pointsPerClick * multiplier
  updateDisplay()
 })
 
+// upgrades
 const upgrades = [
  { id: 1, name: "Game 1", cost: 1, bonus: 4, purchased: 0 },
  { id: 2, name: "Game 2", cost: 5, bonus: 6, purchased: 0 },
@@ -27,7 +37,7 @@ function renderUpgrades() {
   div.innerHTML = `
       <strong>${upgrade.name}</strong>
       Cost: ${upgrade.cost} | +${upgrade.bonus} per click
-      Bought : ${upgrade.purchased}
+      Bought: ${upgrade.purchased}
       <button onclick="buyUpgrade(${upgrade.id})">Buy</button>
     `
   container.appendChild(div)
@@ -36,13 +46,11 @@ function renderUpgrades() {
 
 renderUpgrades()
 
-//  buy an upgrade
+// buy an upgrade
 function buyUpgrade(id) {
-
  const upgrade = upgrades.find(e => e.id === id)
- if (!upgrade) {
-  return
- }
+ if (!upgrade) return
+
  if (score >= upgrade.cost) {
   score -= upgrade.cost
   pointsPerClick += upgrade.bonus
@@ -53,20 +61,41 @@ function buyUpgrade(id) {
  }
 }
 
-//disabled buttons you cant afford
-upgrades.forEach(upgrade => {
- const div = document.createElement('div')
+// win screen
+function showWinScreen() {
+ const container = document.body
 
- const button = document.createElement('button')
- button.textContent = 'Buy'
- button.onclick = () => buyUpgrade(upgrade.id)
- button.disabled = score < upgrade.cost
+ const winDiv = document.createElement('div')
+ winDiv.id = 'win-screen'
+ winDiv.innerHTML = `
+   <h2>🎉 You Win!</h2>
+   <p>You reached ${winScore} points!</p>
+   <button id="prestige-btn">Prestige (Reset & x2 earnings)</button>
+ `
+ container.appendChild(winDiv)
 
- div.innerHTML = `
-    <strong>${upgrade.name}</strong>
-    Cost: ${upgrade.cost} | +${upgrade.bonus} per click
-  `
- div.appendChild(button)
- container.appendChild(div)
-});
+ document.getElementById('prestige-btn').onclick = prestige
+}
 
+// prestige
+function prestige() {
+ // reset core stats
+ score = 0
+ pointsPerClick = 1
+ multiplier *= 2
+
+ // reset upgrades
+ upgrades.forEach(upgrade => {
+  upgrade.purchased = 0
+ })
+
+ hasWon = false
+
+ // remove win screen
+ const winScreen = document.getElementById('win-screen')
+ if (winScreen) winScreen.remove()
+
+ updateDisplay()
+ renderUpgrades()
+ alert("Prestige activated! Multiplier is now x" + multiplier)
+}
